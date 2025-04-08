@@ -54,14 +54,14 @@ def cell():
             return "cell"
         return "korridor"
     else:
-        print("Ogiltigt val, du stannar i cellen.")
+        print(Fore.RESET + "Ogiltigt val, du stannar i cellen.")
         return "cell"
 
 def vaktrum():
     global nyckel_hittad, vakt_eliminerad
-    print(Fore.YELLOW + "Du är nu i vaktrummet")
+    print(Fore.BLUE + "Du är nu i vaktrummet")
     if not nyckel_hittad and not vakt_eliminerad:
-        spelarens_val = input("Du ser en nyckel på bordet. Vill du försöka ta den osedd eller attackera vakten? (ta/attackera/nej): ").lower()
+        spelarens_val = input(Fore.RESET + "Du ser en nyckel på bordet. Vill du försöka ta den osedd eller attackera vakten? (ta/attackera/nej): ").lower()
         if spelarens_val == "ta":
             if random.random() < 0.8:  # 80% chans att lyckas
                 print(Fore.GREEN + "Du tog nyckeln utan att vakten såg!")
@@ -88,7 +88,7 @@ def vaktrum():
         return "vaktrum"
 
 def korridor():
-    print(Fore.CYAN + "Du är nu i korridoren")
+    print(Fore.BLUE + "Du är nu i korridoren")
     if not nyckel_hittad:
         print(Fore.RED + "Dörren till avloppsrummet är låst. Försök hitta nyckeln i vaktrummet!")
         return "cell"
