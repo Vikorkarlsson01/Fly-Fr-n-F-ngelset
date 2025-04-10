@@ -1,84 +1,100 @@
 # Start
+import os
+import random
 # Färg
 import colorama
 from colorama import Fore, Back, Style
 import random
 colorama.init()
 
-print(Fore.BLUE + "Fly från fängelset")
-print(Fore.GREEN + "1. Starta spelet")
-print(Fore.RED + "2. Avsluta spelet")
-
+pinkod = str(random.randint(1000, 9999))  # Slumpmässig fyrsiffrig pinkod
+filnamn = "Fly_Fron_Fengelset.txt"  # Filnamn på informationen
 spelet_körs = True
 försök = 5
-nyckel_hittad = False  # Variabel för att spåra om spelaren har nyckeln
 vakt_eliminerad = False  # Variabel för att spåra om vakten är eliminerad
 
-for i in range(försök):
-    gör_ett_val = input(Style.RESET_ALL + "Gör ett val: ")
-    
-    if gör_ett_val == "1":
-        print(Fore.GREEN + "Startar spelet")
-        spelet_körs = False  # Spelet har redan startat, så while-loopen ska inte köras
-        break  # Avslutar loopen och startar spelet
-    elif gör_ett_val == "2":
-        print(Fore.RED + "Avslutar spelet")
-        exit()
-    else:
-        print(Style.RESET_ALL + "Ogiltigt val, skriv 1 eller 2")
-else:
-    print(Fore.RED + "Är du dum i huvudet du ska skriva 1 eller 2..." + Style.RESET_ALL)
+def huvudmeny():
+    global spelet_körs
+    fel_försök = 0  # Räknare för felaktiga försök
+    while True:
+        print(Fore.MAGENTA + "Fly från fängelset")
+        print(Fore.GREEN + "1. Starta spelet")
+        print(Fore.RED + "2. Avsluta spelet")
+        print(Fore.BLUE + "info" + Style.RESET_ALL)
 
-# Fortsätt med while-loop efter att for-loopen har avslutats, om spelet inte startades
-while spelet_körs == True:
-    gör_ett_val = input("Gör ett val: ")
-    
-    if gör_ett_val == "1":
-        print(Fore.GREEN + "Startar spelet")
-        spelet_körs = False
-    elif gör_ett_val == "2":
-        print(Fore.RED + "Avslutar spelet")
-        exit()
-    else:
-        print(Style.RESET_ALL + "Ogiltigt val, skriv 1 eller 2")
+        val = input("Gör ett val: ").lower()
+
+        if val == "1":
+            print(Fore.GREEN + "Startar spelet")
+            spelet_körs = True
+            break  # Gå vidare till spelet
+        elif val == "2":
+            print(Fore.RED + "Avslutar spelet")
+            exit()
+        elif val == "info":
+            try:
+                with open(filnamn, "r", encoding="utf-8") as fil:
+                    innehåll = fil.read()
+                    print("\n--- INFORMATION ---")
+                    print(innehåll)
+                    print("-------------------")
+            except FileNotFoundError:
+                print(Fore.RED + f"Filen '{filnamn}' hittades inte.")
+        else:
+            fel_försök += 1
+            if fel_försök >= 5:
+                print(Fore.YELLOW + "Japp, du lyckades skriva något som inte ens fanns som val. Imponerande! Testa 1, 2 eller info.")
+                fel_försök = 0  # Återställ räknaren
+            else:
+                print(Style.RESET_ALL + f"Ogiltigt val, skriv 1, 2 eller info.")
+
+# Anropa huvudmenyn i början av programmet
+huvudmeny()
 
 # Rumfunktioner
+# def cell():
+#     print(Fore.BLUE + "Du är nu i en cell")
+#     spelarens_val = input(Fore.RESET + "Vill du gå till vaktrummet eller korridoren? (vaktrum/korridor): ").lower()
+#     if spelarens_val == "vaktrum":
+#         return "vaktrum"
+#     elif spelarens_val == "korridor":
+#         if not pinkod_hittad:
+#             print(Fore.RED + "Dörren till korridoren är låst. Försök hitta!")
+#             return "cell"
+#         return "korridor"
+#     else:
+#         print(Fore.RESET + "Ogiltigt val, du stannar i cellen.")
+#         return "cell"
+
 def cell():
     print(Fore.BLUE + "Du är nu i en cell")
     spelarens_val = input(Fore.RESET + "Vill du gå till vaktrummet eller korridoren? (vaktrum/korridor): ").lower()
     if spelarens_val == "vaktrum":
         return "vaktrum"
     elif spelarens_val == "korridor":
-        if not nyckel_hittad:
-            print(Fore.RED + "Dörren till korridoren är låst. Försök hitta!")
+        kod_input = input(Fore.YELLOW + "Dörren är låst. Skriv in pinkoden för att låsa upp: ")
+        if kod_input == pinkod:
+            print(Fore.GREEN + "Koden var rätt! Dörren till korridoren är nu öppen.")
+            return "korridor"
+        else:
+            print(Fore.RED + "Fel kod! Dörren förblir låst.")
             return "cell"
-        return "korridor"
     else:
         print(Fore.RESET + "Ogiltigt val, du stannar i cellen.")
         return "cell"
 
 def vaktrum():
-    global nyckel_hittad, vakt_eliminerad
     print(Fore.BLUE + "Du är nu i vaktrummet")
-    if not nyckel_hittad and not vakt_eliminerad:
-        spelarens_val = input(Fore.RESET + "Du ser en nyckel på bordet. Vill du försöka ta den osedd eller attackera vakten? (ta/attackera/nej): ").lower()
-        if spelarens_val == "ta":
-            if random.random() < 0.8:  # 80% chans att lyckas
-                print(Fore.GREEN + "Du tog nyckeln utan att vakten såg!")
-                nyckel_hittad = True
-            else:
-                print(Fore.RED + "Vakten såg dig och kastade ut dig ur vaktrummet!")
-                return "cell"
-        elif spelarens_val == "attackera":
-            if random.random() < 0.5:  # 50% chans att lyckas
-                print(Fore.GREEN + "Du övermannade vakten och tog nyckeln!")
-                nyckel_hittad = True
-                vakt_eliminerad = True
-            else:
-                print(Fore.RED + "Vakten besegrade dig och du blev inspärrad igen!")
-                return "cell"
+    spelarens_val = input(Fore.RESET + "Du ser en lapp på bordet. Vill du läsa den? (ja/nej): ").lower()
+    if spelarens_val == "ja":
+        print(Fore.GREEN + f"Du läser lappen och hittar pinkoden: {pinkod}")
+    elif spelarens_val == "nej":
+        print(Fore.YELLOW + "Du ignorerar lappen och går vidare.")
+    else:
+        print(Fore.RED + "Ogiltigt val, du stannar i vaktrummet.")
+        return "vaktrum"
 
-    spelarens_val = input("Vill du gå till korridoren eller tillbaka till cellen? (korridor/cell): ").lower()
+    spelarens_val = input(Fore.RESET + "Vill du gå till korridoren eller tillbaka till cellen? (korridor/cell): ").lower()
     if spelarens_val == "korridor":
         return "korridor"
     elif spelarens_val == "cell":
@@ -87,12 +103,15 @@ def vaktrum():
         print("Ogiltigt val, du stannar i vaktrummet.")
         return "vaktrum"
 
-def korridor():
+def korridor(pinkod):
     print(Fore.BLUE + "Du är nu i korridoren")
-    if not nyckel_hittad:
-        print(Fore.RED + "Dörren till avloppsrummet är låst. Försök hitta nyckeln i vaktrummet!")
+    kod_input = str(input(Fore.YELLOW + "Dörren är låst. Skriv in pinkoden: "))
+    if (kod_input == pinkod):
+        print(Fore.GREEN + "Koden var rätt! Du kan fortsätta.")
+    else:
+        print(Fore.RED + "Fel kod. Du skickas tillbaka till cellen.")
         return "cell"
-    spelarens_val = input("Vill du gå till avloppsrummet eller vaktrummet? (avloppsrum/vaktrum): ").lower()
+    spelarens_val = input(Fore.RESET + "Vill du gå till avloppsrummet eller vaktrummet? (avloppsrum/vaktrum): ").lower()
     if spelarens_val == "avloppsrum":
         return "avloppsrum"
     elif spelarens_val == "vaktrum":
@@ -103,7 +122,7 @@ def korridor():
 
 def avloppsrum():
     print(Fore.GREEN + "Du är nu i avloppsrummet")
-    spelarens_val = input("Vill du gå tillbaka till korridoren eller fly? (korridor/fly): ").lower()
+    spelarens_val = input(Fore.RESET + "Vill du gå tillbaka till korridoren eller fly? (korridor/fly): ").lower()
     if spelarens_val == "korridor":
         return "korridor"
     elif spelarens_val == "fly":
@@ -121,9 +140,13 @@ while True:
     elif aktuellt_rum == "vaktrum":
         aktuellt_rum = vaktrum()
     elif aktuellt_rum == "korridor":
-        aktuellt_rum = korridor()
+        aktuellt_rum = korridor(pinkod)
     elif aktuellt_rum == "avloppsrum":
         aktuellt_rum = avloppsrum()
 
 # Färgstädning
 colorama.deinit()
+
+# pinkod istället för lås
+
+# man kan gå två håll i avloppsrummet 
