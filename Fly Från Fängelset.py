@@ -8,7 +8,8 @@ import random
 colorama.init()
 
 pinkod = str(random.randint(1000, 9999))  # Slumpmässig fyrsiffrig pinkod
-filnamn = "Fly_Fron_Fengelset.txt"  # Filnamn på informationen
+filnamn = "Fly_Fron_Fengelset.txt"  # Filnamn på informationen - ("filnamn = r"C:\användare\ditt_namn\mapp\Fly_Fron_Fengelset.txt"")
+
 spelet_körs = True
 försök = 5
 vakt_eliminerad = False  # Variabel för att spåra om vakten är eliminerad
@@ -50,22 +51,6 @@ def huvudmeny():
 
 # Anropa huvudmenyn i början av programmet
 huvudmeny()
-
-# Rumfunktioner
-# def cell():
-#     print(Fore.BLUE + "Du är nu i en cell")
-#     spelarens_val = input(Fore.RESET + "Vill du gå till vaktrummet eller korridoren? (vaktrum/korridor): ").lower()
-#     if spelarens_val == "vaktrum":
-#         return "vaktrum"
-#     elif spelarens_val == "korridor":
-#         if not pinkod_hittad:
-#             print(Fore.RED + "Dörren till korridoren är låst. Försök hitta!")
-#             return "cell"
-#         return "korridor"
-#     else:
-#         print(Fore.RESET + "Ogiltigt val, du stannar i cellen.")
-#         return "cell"
-
 def cell():
     print(Fore.BLUE + "Du är nu i en cell")
     spelarens_val = input(Fore.RESET + "Vill du gå till vaktrummet eller korridoren? (vaktrum/korridor): ").lower()
@@ -146,7 +131,3 @@ while True:
 
 # Färgstädning
 colorama.deinit()
-
-# pinkod istället för lås
-
-# man kan gå två håll i avloppsrummet 
